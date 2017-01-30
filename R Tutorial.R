@@ -49,14 +49,14 @@ rm(PAT_ID, PAT_AGE, PAT_GENDER, PAT_ETHNICITY, PAT_CLASS, DOCTOR, PAT_SCHEDULED,
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # you will only have to install an R package once on your computer
-# the following packages are popular for analytics, statistics, graphics, and data manipulation
+# below is an example on how to install a package
 # when a window pops up asking you to choose a 'CRAN mirror' the default selection will be the Cloud, that will work fine, so just press 'Ok'
 # to know that a package was successfully installed look to the bottom of the print out for the phrase: package 'XYZ' successfully unpacked and MD5 sums checked
-# for example: package 'plyr' successfully unpacked and MD5 sums checked
+# for example: package 'ggplot2' successfully unpacked and MD5 sums checked
 
 install.packages("ggplot2")
 
-# lets look at loading packages
+# below is an example on how to load a package
 # you will have to do this once, everytime you open up the R application, ONLY IF you desire to use the functions in a particular package
 # you may see a warning message print out after loading a package, don't be concerned, if you were able to sucessfully install a package then loading it will always work
 
@@ -415,11 +415,7 @@ ls()
 # rm is a function that removes R objects from the R work space, once you do this, you cant get those objects back unless you recreate them with your code again
 # lets remove some R objects
 
-rm(i, IloveR, x, fib, types)
-
-# i guess we can remove this one too
-
-rm(GoPatriots)
+rm(i, IloveR, x, fib, GoPatriots)
 
 # verify we removed them
 
@@ -987,7 +983,7 @@ LOS5
 # lets do a boxplot of length of stay by GENDER
 # notice the input: notch, in geom_boxplot
 # this notch is an approximate 95% Confidence Interval about the median
-# a notch is useful when comparing two or more boxplots, if two notches overlap then that indicates little difference between the two sets of data
+# a notch is useful when comparing two or more boxplots, if two notches overlap then that indicates little difference between the center of two sets of data
 
 LOS6 = ggplot(data = dat, aes(x = PAT_GENDER, y = PAT_LOS_HOURS, fill = PAT_GENDER)) +
   geom_boxplot(notch = TRUE) +
