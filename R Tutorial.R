@@ -49,18 +49,131 @@ rm(PAT_ID, PAT_AGE, PAT_GENDER, PAT_ETHNICITY, PAT_CLASS, DOCTOR, PAT_SCHEDULED,
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # you will only have to install an R package once on your computer
-# below is an example on how to install a package
+# the following packages are popular for analytics, statistics, graphics, and data manipulation
 # when a window pops up asking you to choose a 'CRAN mirror' the default selection will be the Cloud, that will work fine, so just press 'Ok'
 # to know that a package was successfully installed look to the bottom of the print out for the phrase: package 'XYZ' successfully unpacked and MD5 sums checked
-# for example: package 'ggplot2' successfully unpacked and MD5 sums checked
+# for example: package 'plyr' successfully unpacked and MD5 sums checked
 
+# install.packages("plyr")
 install.packages("ggplot2")
+install.packages("car")
+install.packages("MASS")
+# install.packages("Matrix")
+# install.packages("rpart")
+# install.packages("nlme")
+install.packages("leaps")
+install.packages("randomForest")
+install.packages("psych")
+# install.packages("effects")
+# install.packages("scatterplot3d")
+# install.packages("quantreg")
+install.packages("foreach")
+# install.packages("mvtnorm")
+# install.packages("foreign")
+# install.packages("gtools")
+# install.packages("gdata")
+# install.packages("lmtest")
+# install.packages("survival")
+install.packages("tseries")
+# install.packages("gplots")
+# install.packages("abind")
+# install.packages("maps")
+# install.packages("cluster")
+# install.packages("SparseM")
+install.packages("tree")
+# install.packages("robustbase")
+install.packages("AlgDesign")
+# install.packages("FrF2")
+install.packages("forecast")
+# install.packages("plotrix")
+# install.packages("matrixcalc")
+# install.packages("modeltools")
+# install.packages("relimp")
+# install.packages("dplyr")
+# install.packages("lattice")
+install.packages("goftest")
+install.packages("fitdistrplus")
+install.packages("nortest")
+# install.packages("mixtools")
+install.packages("chron")
+# install.packages("RODBC")
+install.packages("gridExtra")
+# install.packages("hexbin")
+install.packages("GGally")
+install.packages("triangle")
+# install.packages("gstat")
+# install.packages("Hmisc")
+# install.packages("pastecs")
+install.packages("ggmap")
+install.packages("data.table")
+# install.packages("EnvStats")
+install.packages("nnet")
+# install.packages("nnetpredint")
+install.packages("fGarch")
+install.packages("doParallel")
 
-# below is an example on how to load a package
+# install.packages("fGarch", lib = .libPaths(), destdir = .libPaths())
+
+
+# lets look at loading packages
 # you will have to do this once, everytime you open up the R application, ONLY IF you desire to use the functions in a particular package
 # you may see a warning message print out after loading a package, don't be concerned, if you were able to sucessfully install a package then loading it will always work
 
+require(plyr)
 require(ggplot2)
+require(car)
+require(MASS)
+require(Matrix)
+require(rpart)
+require(nlme)
+require(leaps)
+require(randomForest)
+require(psych)
+require(effects)
+require(scatterplot3d)
+require(quantreg)
+require(foreach)
+require(mvtnorm)
+require(foreign)
+require(gtools)
+require(gdata)
+require(lmtest)
+require(survival)
+require(tseries)
+require(gplots)
+require(abind)
+require(maps)
+require(cluster)
+require(SparseM)
+require(tree)
+require(robustbase)
+require(AlgDesign)
+require(FrF2)
+require(forecast)
+require(plotrix)
+require(matrixcalc)
+require(tree)
+require(modeltools)
+require(relimp)
+require(dplyr)
+require(lattice)
+require(goftest)
+require(fitdistrplus)
+require(nortest)
+require(mixtools)
+require(chron)
+require(RODBC)
+require(gridExtra)
+require(hexbin)
+require(parallel)
+require(GGally)
+require(triangle)
+require(triangle)
+require(gstat)
+require(Hmisc)
+require(pastecs)
+require(ggmap)
+require(data.table)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---- Importing & Exporting Data ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -85,6 +198,26 @@ write.csv(dat, file.choose())
 # we are exporting the dataframe dat that we created, if you have another R object that you made, just delete dat and write in the name of your R object
 
 write.table(dat, file.choose())
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+# ---- Importing Data from Teradata to R -------------------------------------------------------------------------------------------
+# ---- This ONLY works for R, not RStudio. DO NOT install RODBC in RStudio ---------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+require(RODBC)
+
+# then you will create an object 'db' to create the connection between R and Teradata
+# this will open up a window and you will have to follow two steps:
+# click on CDISTeradatProd_LDAP and click OK
+# if you don't see this then try the other available options
+# type in your username and password and click OK
+
+db = odbcDriverConnect()
+
+# then you will create a dataframe object 'DF' which will contain the data you want from a created table
+# INNOVATIONS_ANALYTICS.CMC_6AM_CENSUS is a created table in Teradata that I've worked on
+
+DF = sqlQuery(db, "select * from INNOVATIONS_ANALYTICS.CMC_6AM_CENSUS")
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---- Changing Data Types -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -415,7 +548,11 @@ ls()
 # rm is a function that removes R objects from the R work space, once you do this, you cant get those objects back unless you recreate them with your code again
 # lets remove some R objects
 
-rm(i, IloveR, x, fib, GoPatriots)
+rm(i, IloveR, x, fib, types)
+
+# i guess we can remove this one too
+
+rm(GoPatriots)
 
 # verify we removed them
 
@@ -983,7 +1120,7 @@ LOS5
 # lets do a boxplot of length of stay by GENDER
 # notice the input: notch, in geom_boxplot
 # this notch is an approximate 95% Confidence Interval about the median
-# a notch is useful when comparing two or more boxplots, if two notches overlap then that indicates little difference between the center of two sets of data
+# a notch is useful when comparing two or more boxplots, if two notches overlap then that indicates little difference between the two sets of data
 
 LOS6 = ggplot(data = dat, aes(x = PAT_GENDER, y = PAT_LOS_HOURS, fill = PAT_GENDER)) +
   geom_boxplot(notch = TRUE) +
@@ -1363,7 +1500,7 @@ AGE2
 # waffle plots are an alternative to pie charts and barplots when it comes to graphing proportions
 # waffle plots show you every data point as a square to give you an idea on how proportions are spread out
 
-# here is a function that does waffle plots
+# here is a function I found online to do waffle plots
 
 waffles = function(factors, counts, rows, plot_title = "", strip_title = "", legend_title = "", legend_position = "top", legend_rows = "", legend_cols = "")
 {
@@ -2406,3 +2543,1287 @@ fit.emp
 # lets remove some R objects
 
 rm(emp, fit.cauchy, fit.emp, fit.exp, fit.gamma, fit.lnorm, fit.logis, fit.norm, fit.unif, fit.weibull, lam1, lam2, mix.norm, mixnormDensity, mixnormQQ, mu1, mu2, pmnorm, sig1, sig2, sampledist)
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Linear Regression Analysis ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rm(dat)
+
+# ---- modeling data ----------------------------------------------------------------------------------------------------------------
+
+require(triangle)
+
+# our response variable that we want to predict will be normally distributed
+# we will sort this from low to high so that way clear relationships can be seen between variables
+ynorm = sort(rnorm(n = 200, mean = 100, sd = 8)) 
+# add some noise to the variable so the relationships aren't too precise
+ynorm = ynorm + (ynorm * sample(x = seq(from = .9, to = 1.1, by = .001), size = 200, replace = TRUE))
+
+# lets have a bimodal distribution (normal mixture) as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xnorms = sort(c(rnorm(n = 100, mean = 75, sd = 10), rnorm(n = 100, mean = 125, sd = 10)))
+
+# lets have an exponential distribution skewed to the right as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xexp = sort(rexp(n = 200, rate = 1/33)) + 10
+# add some noise to the variable so the relationships aren't too precise
+xexp = xexp + (xexp * sample(x = seq(from = .9, to = 1.1, by = .001), size = 200, replace = TRUE))
+
+# lets have an exponential distribution skewed to the left as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xrexp = sort(rexp(n = 200, rate = 1/33)) + 10
+# add some noise to the variable so the relationships aren't too precise
+xrexp = xrexp + (xrexp * sample(x = seq(from = .9, to = 1.1, by = .001), size = 200, replace = TRUE))
+xrexp = sort(-xrexp) + 1000
+
+# lets have a triangular distribution as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xtriangle = sort(rtriangle(n = 200, a = 50, b = 150))
+# add some noise to the variable so the relationships aren't too precise
+xtriangle = xtriangle + (xtriangle * sample(x = seq(from = .9, to = 1.1, by = .001), size = 200, replace = TRUE))
+
+# lets have a cauchy distribution as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xcauchy = sort(rcauchy(n = 200, location = 500, scale = 1/2))
+
+# lets have a uniform distribution as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xunif = sort(runif(n = 200, min = 200, max = 325))
+
+# lets have a beta distribution with a large dip in the center as one of the predictor variables
+# we will sort this from low to high so that way clear relationships can be seen between variables
+xbeta = sort((rbeta(n = 200, shape1 = 1/3, shape2 = 1/3) + 1) * 150)
+
+# lets add some categorical variables as predictor variables, with their probabiltiy of occurence based on a beta distribution
+cat1 = sort(sample(x = c("A", "B", "C", "D"), size = 200, replace = TRUE, prob = rbeta(4,20,10)))
+cat2 = sort(sample(x = c("Low", "Medium", "High"), size = 200, replace = TRUE, prob = rbeta(3,5,10)))
+cat3 = as.factor(sort(sample(x = c(0, 1), size = 200, replace = TRUE, prob = rbeta(2,8,2))))
+
+# create the data set of 200 total observations for each variable
+dat = data.frame(ynorm, xnorms, xexp, xrexp, xtriangle, xcauchy, xunif, xbeta, cat1, cat2, cat3)
+
+# ---- prediction data ----------------------------------------------------------------------------------------------------------------
+
+# lets create another data set sampled the same way as the previous BUT make it 1000 observations so that way the true relationships between all the variables are clear
+# the goal here is to see how well we can model with 200 data points to predict the next 1000 data points
+
+ynorm = sort(rnorm(n = 1000, mean = 100, sd = 8)) 
+ynorm = ynorm + (ynorm * sample(x = seq(from = .9, to = 1.1, by = .001), size = 1000, replace = TRUE))
+
+xnorms = sort(c(rnorm(n = 500, mean = 75, sd = 10), rnorm(n = 500, mean = 125, sd = 10)))
+
+xexp = sort(rexp(n = 1000, rate = 1/33)) + 10
+xexp = xexp + (xexp * sample(x = seq(from = .9, to = 1.1, by = .001), size = 1000, replace = TRUE))
+
+xrexp = sort(rexp(n = 1000, rate = 1/33)) + 10
+xrexp = xrexp + (xrexp * sample(x = seq(from = .9, to = 1.1, by = .001), size = 1000, replace = TRUE))
+xrexp = sort(-xrexp) + 1000
+
+xtriangle = sort(rtriangle(n = 1000, a = 50, b = 150))
+xtriangle = xtriangle + (xtriangle * sample(x = seq(from = .9, to = 1.1, by = .001), size = 1000, replace = TRUE))
+
+xcauchy = sort(rcauchy(n = 1000, location = 500, scale = 1/2))
+
+xunif = sort(runif(n = 1000, min = 200, max = 325))
+
+xbeta = sort((rbeta(n = 1000, shape1 = 1/3, shape2 = 1/3) + 1) * 150)
+
+cat1 = sort(sample(x = c("A", "B", "C", "D"), size = 1000, replace = TRUE, prob = rbeta(4, 20, 10)))
+cat2 = sort(sample(x = c("Low", "Medium", "High"), size = 1000, replace = TRUE, prob = rbeta(3, 5, 10)))
+cat3 = as.factor(sort(sample(x = c(0, 1), size = 1000, replace = TRUE, prob = rbeta(2, 8, 2))))
+
+future = data.frame(ynorm, xnorms, xexp, xrexp, xtriangle, xcauchy, xunif, xbeta, cat1, cat2, cat3)
+
+rm(ynorm, xnorms, xexp, xrexp, xtriangle, xcauchy, xunif, xbeta, cat1, cat2, cat3)
+
+# ---- check out the pairs plot of the data to see what relationships are present -----------------------------------------
+
+require(GGally)
+require(ggplot2)
+
+# https://cran.r-project.org/web/packages/GGally/GGally.pdf
+
+# heres what our modeling data looks like (ONLY for the response variable v. numeric predictor variables)
+# the first column of scatterplots represent the relationship between our response variable and the other predictor variables
+# we want to see relationships here
+# the scatterplots other than the first column represent the relationships between all predictor vairables
+# we don't want to see relationships here
+# the plots along the diagonal show the distribution of all the variables
+# the first row of correlation values show the correlation between the response variable and all the predictor variables
+# the correlations values other than the first row represent tthe correlations between all predictor vairables
+
+ggpairs(dat, columns = colnames(dat[,1:8]))
+
+# let remove some outliers in xcauchy
+
+plot(x = dat$ynorm, y = dat$xcauchy)
+
+dat = dat[-which(dat$xcauchy == min(dat$xcauchy)),]
+dat = dat[-which(dat$xcauchy == max(dat$xcauchy)),]
+
+# heres what our modeling data looks like (ONLY for the response variable v. categorical predictor variables)
+# the first column is histograms: representing the distribtuion of the repsonse variable in each level of the predictor variables
+# we want to see a central difference between each level of the predictor variables
+# the first row is boxplots: representing the distribution of each level of the predictor variables across the distribtuion of the response variable
+# we want to see a difference in the positioning of the boxplots for each plot
+# the plots along the diagonal show the distribution of all the variables
+# the remaining plots show the distribution of each level of the predictors variables across each level of the other predictor variables
+
+ggpairs(dat, columns = colnames(dat[,c(1,9:11)]))
+
+# increasing the size of the correlation values
+
+ggpairs(dat,  
+        columns = colnames(dat[,1:8]),
+        upper = list(continuous = wrap(ggally_cor, size = 8, color = "black")))
+
+# line smoothing on the scatterplots
+
+ggpairs(dat, 
+        columns = colnames(dat[,1:8]),
+        lower = list(continuous = wrap(ggally_smooth_loess, color = "cornflowerblue", alpha = 1/3)))
+
+# coloring the density plots
+
+ggpairs(dat,
+        columns = colnames(dat[,1:8]),
+        diag = list(continuous = wrap(ggally_densityDiag, fill = "black", alpha = 1/3)))
+
+# diagonal histograms
+
+ggpairs(dat,
+        columns = colnames(dat[,1:8]),
+        diag = list(continuous = wrap(ggally_barDiag, fill = "black", color = "white")))
+
+# coloring by a categorical variable on all plots
+
+ggpairs(dat, 
+        columns = colnames(dat[,1:8]), 
+        mapping = aes(color = cat1, fill = cat1))
+
+# coloring by a categorical variable on just the scatterplots
+
+ggpairs(dat, 
+        columns = colnames(dat[,1:8]), 
+        lower = list(mapping = aes(color = cat1)))
+
+# final preferred plot
+
+plot_pairs = ggpairs(dat, 
+					 columns = colnames(dat[,1:8]), 
+        			 lower = list(mapping = aes(color = cat1)), 
+        			 upper = list(continuous = wrap(ggally_cor, size = 6, color = "black")),
+        			 diag = list(continuous = wrap(ggally_densityDiag, fill = "black", alpha = 1/3)))
+
+plot_pairs
+
+# ---- lets run some anova tests to see which variables should be of interest -----------------------------------------
+
+list_anova = lapply(2:NCOL(dat), function(i) anova(lm(dat[,1] ~ dat[,i])))
+names(list_anova) = colnames(dat[,2:NCOL(dat)])
+
+list_anova
+
+# all variables are significant so we will consider all of them in our modeling process
+
+rm(list_anova)
+
+# ---- lets create all possible regression models up to main effects with our variables of interest -----------------------------------------
+
+# lets create two way interaction models
+
+# create all possible 2-way pairs
+x = expand.grid(1:NCOL(dat), 1:NCOL(dat))
+
+# remove all pairs that have variables interacting with themselves
+x = x[which(x[,1] != x[,2]),]
+
+# remove all pairs that have categorical variables interacting with eachother
+x = x[-which((x[,1] == 9 | x[,1] == 10 | x[,1] == 11) & 
+			 (x[,2] == 9 | x[,2] == 10 | x[,2] == 11)),]
+
+# remove all pairs with the reponse variable
+x = x[which(x[,1] != 1),]
+x = x[which(x[,2] != 1),]
+
+# remove all duplicate pairs
+y = data.frame(t(apply(X = x, MARGIN = 1,FUN = sort)))
+x = x[!duplicated(y),]
+rm(y)
+
+# create a group of interactions that involve only numeric variables
+x1 = x[which(x[,1] < 9),]
+
+# create 3 groups of interactions between the numeric variables and each of the 3 categorical variables
+x2 = x[which(x[,1] == 9),]
+x3 = x[which(x[,1] == 10),]
+x4 = x[which(x[,1] == 11),]
+
+# show the interactions in each group
+rownames(x1) = 1:NROW(x1)
+x1$Var1Var2 = paste(colnames(dat)[x1[,1]], ":", colnames(dat)[x1[,2]], sep = "")
+
+rownames(x2) = 1:NROW(x2)
+x2$Var1Var2 = paste(colnames(dat)[x2[,1]], ":", colnames(dat)[x2[,2]], sep = "")
+
+rownames(x3) = 1:NROW(x3)
+x3$Var1Var2 = paste(colnames(dat)[x3[,1]], ":", colnames(dat)[x3[,2]], sep = "")
+
+rownames(x4) = 1:NROW(x4)
+x4$Var1Var2 = paste(colnames(dat)[x4[,1]], ":", colnames(dat)[x4[,2]], sep = "")
+
+# look at our 4 linear model groups
+
+x1
+x2
+x3
+x4
+
+rm(x, x1, x2, x3, x4)
+
+# lets create all possible regression models for each of the 4 groups
+
+require(leaps)
+
+# regsubsets is a function that creates smaller linear models derived from a larger linear model
+# there will be a one variable model, a two variable model, ..., and a N variable model, where N is the total number of terms in the given larger model
+# regsubsets takes on a variety of inputs:
+	# the first input is the larger linear model that includes all possible terms to create smaller linear models from
+	# data is the data frame that the variables in the larger linear model belong to
+	# nbest is how many models you want for each smaller model
+		# if nbest = 1, then it will return the best one variable model, the best two variable model, ..., and the best N variable model
+		# if nbest = 2 then it will return the top two one variable models, the top two two variable models, ..., and the top two N variable models 
+	# nvmax is the maximum number of smaller models to evalute
+		# this is set to 8 by default, but we are interested in the maximum number of smaller models so we set nvmax = NULL
+	# method is how regsubets goes about creating models
+		# method can equal "exhaustive", "backward", "forward", or "seqrep", to do exhaustive search, forward or backward stepwise, or sequential replacement respectively
+	# really.big is an input that must be set to TRUE if we are doing an exhaustive search and if the total number of possible variables to add to any of the smaller models is greater than 50
+		# by default it is set to FALSE, but we will set it to TRUE just incase we need to evaluate more than 50 variables
+
+apr1 = regsubsets(ynorm ~ xnorms + xexp + xrexp + xtriangle + xcauchy + 
+						  xunif + xbeta + xexp:xnorms + xrexp:xnorms + 
+						  xtriangle:xnorms + xcauchy:xnorms + xunif:xnorms + 
+						  xbeta:xnorms + xrexp:xexp + xtriangle:xexp + 
+						  xcauchy:xexp + xunif:xexp + xbeta:xexp + 
+						  xtriangle:xrexp + xcauchy:xrexp + xunif:xrexp + 
+						  xbeta:xrexp + xcauchy:xtriangle + xunif:xtriangle + 
+						  xbeta:xtriangle + xunif:xcauchy + xbeta:xcauchy + xbeta:xunif,
+				 data = dat,
+				 nbest = 1,      
+				 nvmax = NULL,
+				 method = "exhaustive",
+				 really.big = TRUE)
+
+apr2 = regsubsets(ynorm ~ xnorms + xexp + xrexp + xtriangle + xcauchy + xunif + 
+						  xbeta + cat1:xnorms + cat1:xexp + cat1:xrexp + cat1:xtriangle + 
+						  cat1:xcauchy + cat1:xunif + cat1:xbeta,
+				 data = dat,
+				 nbest = 1,      
+				 nvmax = NULL,
+				 method = "exhaustive",
+				 really.big = TRUE)
+			
+apr3 = regsubsets(ynorm ~ xnorms + xexp + xrexp + xtriangle + xcauchy + xunif + 
+						  xbeta + cat2:xnorms + cat2:xexp + cat2:xrexp + cat2:xtriangle + 
+						  cat2:xcauchy + cat2:xunif + cat2:xbeta,
+				 data = dat,
+				 nbest = 1,      
+				 nvmax = NULL,
+				 method = "exhaustive",
+				 really.big = TRUE)
+				 
+apr4 = regsubsets(ynorm ~ xnorms + xexp + xrexp + xtriangle + xcauchy + xunif + 
+						  xbeta + cat3:xnorms + cat3:xexp + cat3:xrexp + cat3:xtriangle + 
+						  cat3:xcauchy + cat3:xunif + cat3:xbeta,
+				 data = dat,
+				 nbest = 1,      
+				 nvmax = NULL,
+				 method = "exhaustive",
+				 really.big = TRUE)
+
+# the following function creates 4 bar plots: RSS, AdjR2, Cp, and BIC, for every model in a regsubsets object
+# this function has one input, x
+	# x requires a regsubets object
+
+regsubplots = function(x, basefont = 20)
+{
+	apr = x
+	apr = summary(apr)
+
+	apr_dat = data.frame("Model" = 1:NROW(apr$which), 
+						 apr$which, 
+						 "RSS" = apr$rss, 
+						 "AdjR2" = apr$adjr2, 
+						 "Cp" = apr$cp, 
+						 "BIC" = apr$bic)
+
+	for(i in 2:(NCOL(apr_dat) - 4))
+	{
+		apr_dat[,i] = factor(apr_dat[,i], levels = c("TRUE", "FALSE"))
+	}
+	apr_dat$Model = factor(apr_dat$Model, levels = 1:NROW(apr_dat))
+	
+	require(ggplot2)
+	require(RColorBrewer)
+
+	apr_plot = list("RSS" = ggplot(apr_dat, aes(x = Model, y = RSS, color = RSS, fill = RSS)) +
+						geom_bar(stat = "identity", position = "identity") +
+						scale_color_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				scale_fill_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				ggtitle("RSS By Model") +  
+		   				theme_light(base_size = basefont) +
+						theme(legend.position = "none"),
+				
+				"AdjR2" = ggplot(apr_dat, aes(x = Model, y = AdjR2, color = AdjR2, fill = AdjR2)) +
+						geom_bar(stat = "identity", position = "identity") +
+						scale_color_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				scale_fill_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				ggtitle("AdjR2 By Model") +  
+		   				theme_light(base_size = basefont) +
+						theme(legend.position = "none"),
+				
+				"Cp" = ggplot(apr_dat, aes(x = Model, y = Cp, color = Cp, fill = Cp)) +
+						geom_bar(stat = "identity", position = "identity") +
+						scale_color_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				scale_fill_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				ggtitle("Cp By Model") +  
+		   				theme_light(base_size = basefont) +
+						theme(legend.position = "none"),
+				
+				"BIC" = ggplot(apr_dat, aes(x = Model, y = BIC, color = BIC, fill = BIC)) +
+						geom_bar(stat = "identity", position = "identity") +
+						scale_color_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				scale_fill_gradientn(colors = colorRampPalette(brewer.pal(n = 11, name = "BrBG"))(NROW(apr_dat))) + 
+		   				ggtitle("BIC By Model") +  
+		   				theme_light(base_size = basefont) +
+						theme(legend.position = "none"))
+
+	return(list("dat" = apr_dat, "plots" = apr_plot))
+}
+
+# lets look at the results for the numeric interaction models
+
+require(gridExtra)
+
+apr1 = regsubplots(x = apr1)
+
+grid.arrange(apr1$plots[[1]], 
+			 apr1$plots[[2]], 
+			 apr1$plots[[3]], 
+			 apr1$plots[[4]],  
+			 ncol = 2)
+
+# lets extract models 6 through 12 given that these are good canidates
+
+apr1_models = lapply(6:12, function(i) data.frame("Terms" = colnames(apr1$dat[i, which(apr1$dat[i,] == "TRUE")])[-1]))			 
+names(apr1_models) = paste("Model_", 6:12, sep = "")
+apr1_models
+
+# lets look at the results for one of the categorical interaction models
+
+apr2 = regsubplots(x = apr2)
+
+grid.arrange(apr2$plots[[1]], 
+			 apr2$plots[[2]], 
+			 apr2$plots[[3]], 
+			 apr2$plots[[4]],  
+			 ncol = 2)
+
+# lets extract models 8 through 12 given that these are good canidates
+
+apr2_models = lapply(8:12, function(i) data.frame("Terms" = colnames(apr2$dat[i, which(apr2$dat[i,] == "TRUE")])[-1]))			 
+names(apr2_models) = paste("Model_", 8:12, sep = "")
+apr2_models
+
+# lets look at the results for another one of the categorical interaction models
+
+apr3 = regsubplots(x = apr3)
+	 
+grid.arrange(apr3$plots[[1]], 
+			 apr3$plots[[2]], 
+			 apr3$plots[[3]], 
+			 apr3$plots[[4]],  
+			 ncol = 2)
+
+# lets extract models 5 through 9 given that these are good canidates
+
+apr3_models = lapply(5:9, function(i) data.frame("Terms" = colnames(apr3$dat[i, which(apr3$dat[i,] == "TRUE")])[-1]))			 
+names(apr3_models) = paste("Model_", 5:9, sep = "")
+apr3_models
+
+# lets look at the results for the final categorical interaction models
+
+apr4 = regsubplots(x = apr4)
+	 
+grid.arrange(apr4$plots[[1]], 
+			 apr4$plots[[2]], 
+			 apr4$plots[[3]], 
+			 apr4$plots[[4]],  
+			 ncol = 2)
+
+# lets extract models 5 through 9 given that these are good canidates
+			 
+apr4_models = lapply(5:9, function(i) data.frame("Terms" = colnames(apr4$dat[i, which(apr4$dat[i,] == "TRUE")])[-1]))			 
+names(apr4_models) = paste("Model_", 5:9, sep = "")
+apr4_models
+
+# lets take a look at all of the variables used in the median size model for each of the four groups, to come up with terms to choose from
+
+apr1_models[[round(length(apr1_models)/2,0)]]
+apr2_models[[round(length(apr2_models)/2,0)]]
+apr3_models[[round(length(apr3_models)/2,0)]]
+apr4_models[[round(length(apr4_models)/2,0)]]
+
+rm(apr1_models, apr2_models, apr3_models, apr4_models, apr1, apr2, apr3, apr4)
+
+# the following regsubsets object will evaluate all of the variables used in the median size model from apr1, apr2, ap3, and apr4
+
+apr = regsubsets(ynorm ~ xexp + xunif + xnorms + xcauchy + xtriangle + xexp:cat1 + xexp:xunif + 
+						 xexp:xbeta + xbeta:cat1 + xunif:cat3 + xexp:xcauchy + 
+						 xcauchy:cat2 + xcauchy:cat3 + xcauchy:xunif + xexp:xtriangle + 
+						 xtriangle:cat1 + xtriangle:cat3 + xrexp:xtriangle,
+				 data = dat,
+				 nbest = 1,      
+				 nvmax = NULL,
+				 method = "exhaustive",
+				 really.big = TRUE)	 
+				 
+apr = regsubplots(x = apr)
+
+grid.arrange(apr$plots[[1]], 
+			 apr$plots[[2]], 
+			 apr$plots[[3]], 
+			 apr$plots[[4]],  
+			 ncol = 2)
+
+# lets extract 4 models based on the 4 criterion in the plots: RSS, AdjR2, Cp, BIC
+
+apr_models = lapply(c(20, 14, 8, 4), function(i) data.frame("Terms" = colnames(apr$dat[i, which(apr$dat[i,] == "TRUE")])[-1]))			 
+names(apr_models) = paste("Model_", c("RSS", "AdjR2", "Cp", "BIC"), sep = "")
+apr_models
+
+rm(apr, apr_models)
+
+# ---- lets look at the residuals for the models of interest -----------------------------------------
+
+rsslm = lm(ynorm ~ xexp + xunif + xcauchy + xtriangle + xexp:cat1 + 
+				   xexp:xunif + xexp:xbeta + cat1:xbeta + xunif:cat3 + 
+				   xexp:xcauchy + xcauchy:cat2 + xunif:xcauchy + xtriangle:cat1 + 
+				   xtriangle:cat3 + xtriangle:xrexp,
+		   data = dat)
+
+adjr2lm = lm(ynorm ~ xexp + xunif + xcauchy + xexp:cat1 + xexp:xunif + 
+					 cat1:xbeta + xunif:cat3 + xexp:xcauchy + xunif:xcauchy + 
+					 xtriangle:cat1,
+			 data = dat)
+			 
+cplm = lm(ynorm ~ xexp + xcauchy + xexp:cat1 + 
+				  cat1:xbeta + xexp:xtriangle + 
+				  xtriangle:cat1, 
+		  data = dat)
+
+biclm = lm(ynorm ~ xunif + xcauchy + cat1:xbeta + xtriangle:cat1, 
+		   data = dat)
+
+# plotslm is a function that returns 6 diagnostic plots to visually see how well the residuals are behaving
+# plotslm takes on at least 1 input: model, this is the model we wan tresidual diagnostics for
+# the other inputs include:
+	# binwidth --> the size of the bins in the historgram plot
+	# from --> the first tick value to be plotted on the x axis of the histogram
+	# to --> the last tick value to be plotted on the x axis of the histogram
+	# by --> the increment between all ticks on the x axis of the histogram
+
+plotslm = function(model, binwidth = NULL, from = NULL, to = NULL, by = NULL, n = NULL, basefont = 20)
+{
+	require(ggplot2)
+	require(MASS)
+	
+    rvfPlot = ggplot(model, aes(x = .fitted, y = .resid)) + 
+			  geom_point(na.rm = TRUE) +
+			  stat_smooth(method = "loess", se = FALSE, na.rm = TRUE, color = "blue") +
+			  geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
+			  xlab("Fitted values") +
+			  ylab("Residuals") +
+			  ggtitle("Residual vs Fitted Plot") + 
+			  theme_light(base_size = basefont) +
+			  theme(legend.position = "none")
+    
+	ggqq = function(x, distribution = "norm", ..., conf = 0.95, probs = c(0.25, 0.75), note = TRUE, alpha = 0.33, main = "", xlab = "\nTheoretical Quantiles", ylab = "Empirical Quantiles\n")
+	{
+		# compute the sample quantiles and theoretical quantiles
+		q.function = eval(parse(text = paste0("q", distribution)))
+  		d.function = eval(parse(text = paste0("d", distribution)))
+  		x = na.omit(x)
+  		ord = order(x)
+  		n = length(x)
+  		P = ppoints(length(x))
+  		DF = data.frame(ord.x = x[ord], z = q.function(P, ...))
+  
+  		# compute the quantile line
+  		Q.x = quantile(DF$ord.x, c(probs[1], probs[2]))
+  		Q.z = q.function(c(probs[1], probs[2]), ...)
+  		b = diff(Q.x) / diff(Q.z)
+  		coef = c(Q.x[1] - (b * Q.z[1]), b)
+  
+  		# compute the confidence interval band
+  		zz = qnorm(1 - (1 - conf) / 2)
+  		SE = (coef[2] / d.function(DF$z, ...)) * sqrt(P * (1 - P) / n)
+  		fit.value = coef[1] + (coef[2] * DF$z)
+  		DF$upper = fit.value + (zz * SE)
+  		DF$lower = fit.value - (zz * SE)
+  
+  		# plot the qqplot
+  		p = ggplot(DF, aes(x = z, y = ord.x)) + 
+    		geom_point(color = "black", alpha = alpha) +
+    		geom_abline(intercept = coef[1], slope = coef[2], size = 1, color = "blue") +
+    		geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15) +
+    		coord_cartesian(ylim = c(min(DF$ord.x), max(DF$ord.x))) + 
+    		labs(x = xlab, y = ylab) +
+    		theme_light(base_size = basefont) +
+			theme(legend.position = "none")
+						
+  		# conditional additions
+  		if(main != "")(p = p + ggtitle(main))
+  		
+  		return(p)
+	}
+
+    qqPlot = ggqq(stdres(model), 
+				  alpha = 1,				  
+				  main = "Normal Q-Q Plot", 
+				  xlab = "Theoretical Quantiles", 
+				  ylab = "Standardized Residuals")
+    
+    rvtPlot = ggplot(data.frame("x" = 1:length(model[[2]]), "y" = model[[2]]), aes(x = x, y = y)) + 
+			  geom_line(na.rm = TRUE) +
+			  geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
+			  xlab("Obs. Number") +
+			  ylab("Residuals") +
+			  ggtitle("Residual Time Series") + 
+			  theme_light(base_size = basefont) +
+			  theme(legend.position = "none")
+    
+    cvlPlot = ggplot(model, aes(x = .hat, y = .cooksd)) +
+			  geom_point(na.rm = TRUE) +
+			  stat_smooth(method = "loess", se = FALSE, na.rm = TRUE, color = "blue") +
+			  xlab("Leverage") +
+			  ylab("Cook's Distance") +
+			  ggtitle("Cook's Distance vs Leverage") +
+			  geom_abline(slope = seq(0,3,0.5), color = "black", linetype = "dashed") + 
+			  theme_light(base_size = basefont) +
+			  theme(legend.position = "none")
+	
+	test = t.test(model$residuals)
+	
+	CI = data.frame("x" = test$estimate, 
+					"LCB" = test$conf.int[1], 
+					"UCB" = test$conf.int[2], 
+					row.names = 1)
+	
+	histPlot = ggplot(DF, aes(x = residual)) +
+			   geom_histogram(color = "white", fill = "black", binwidth = binwidth) +
+			   geom_segment(data = CI, aes(x = LCB, xend = LCB, y = 0, yend = Inf), color = "blue") +
+			   geom_segment(data = CI, aes(x = UCB, xend = UCB, y = 0, yend = Inf), color = "blue") +
+			   annotate("text", x = CI$x, y = -10, 
+						label = "T-Test C.I.", size = 5, 
+						color = "blue", fontface = 2) + 
+			    ggtitle("Residual Histogram") +
+			   labs(x = "Residuals", y = "Frequency") +
+	 		   theme_light(base_size = basefont) +
+			   theme(legend.key.size = unit(.25, "in"),
+					 legend.position = "bottom")
+	
+	if(class(from) != "NULL" & class(to) != "NULL" & class(by) != "NULL") (histPlot = histPlot + scale_x_continuous(breaks = seq(from = from, to = to, by = by)))
+	
+	ggacf = function(x, n = NULL, conf.level = 0.95, main = "", basefont = 20) 
+	{
+		if(class(n) == "NULL")
+		{
+			n = length(x) - 2
+		}
+	
+		ciline = qnorm((1 - conf.level) / 2) / sqrt(length(x))
+		bacf = acf(x, lag.max = n, plot = FALSE)
+		bacfdf = with(bacf, data.frame(lag, acf))
+	
+		p = ggplot(bacfdf, aes(x = lag, y = acf)) + 
+			geom_bar(stat = "identity", position = "dodge", fill = "black") +
+			geom_hline(yintercept = -ciline, color = "blue", size = 1) +
+			geom_hline(yintercept = ciline, color = "blue", size = 1) +
+			geom_hline(yintercept = 0, color = "red", size = 1) +
+			labs(x = "Lag", y = "Autocorrelation") +
+			ggtitle(main) +
+			theme_light(base_size = basefont) +
+			theme(legend.position = "none")
+
+		return(p)
+	}
+
+	acfPlot = ggacf(x = model[[2]], main = "ACF Plot of Residuals", basefont = basefont, n = n)
+	
+    return(list("rvfPlot" = rvfPlot, 
+				"qqPlot" = qqPlot, 
+				"rvtPlot" = rvtPlot, 
+				"cvlPlot" = cvlPlot, 
+				"histPlot" = histPlot, 
+				"acfPlot" = acfPlot))
+}
+
+# termplots is a function that returns the residuals of the model due to each of the continuous main effects
+# termplots takes on two inputs:
+	# dat, the dataframe that built the model
+	# model, the model that you want to see the partial residauls of
+
+termplots = function(dat, model, basefont = 20)
+{
+	require(ggplot2)
+	
+	vars = names(model$coefficients)[which(names(model$coefficients) %in% names(dat))]
+	pterms = predict(model, type = "terms")
+	pres = apply(pterms, 2, function(i) i + resid(model))
+	DF = lapply(1:length(vars), function(i) data.frame("x" = model$model[,(i + 1)], "y" = pres[,i]))
+	ablines = lapply(1:length(vars), function(i) lm(pres[,i] ~ model$model[,(i + 1)]))
+	
+	p = lapply(1:length(DF), function(i)
+										ggplot(DF[[i]], aes(x = x, y = y)) + 
+										geom_point(color = "black") +
+										geom_abline(intercept = ablines[[i]]$coefficients[[1]], slope = ablines[[i]]$coefficients[[2]], size = 1, color = "blue") +
+										labs(x = vars[i], y = "Partial Residuals") +
+										ggtitle(paste0("Partial Residuals of ", vars[i])) +
+										theme_light(base_size = basefont) +
+										theme(legend.position = "none")
+	
+	return(p)
+}
+
+# testslm is a function that tests the 6 major assumptions of a linear model
+# testslm take on two inputs:
+	# model, the model that you want to test the 6 assumptions for
+	# LAG, the lag that you want to test up to in the durbin watson test 
+
+testslm = function(LM, LAG = 1)
+{
+    tab1 = t.test(LM$residuals)
+    
+	require(car)
+    tab2 = ncvTest(LM)
+	
+	if(length(LM$residuals) > 5000)
+	{
+		require(nortest)
+		tab3 = ad.test(x = LM$residuals)
+	} else
+	{
+		tab3 = shapiro.test(LM$residuals)
+	}
+	
+    tab4 = durbinWatsonTest(LM, LAG)
+    tab5 = summary(LM)
+    
+	if(length(LM[[1]][which(names(LM[[1]]) != "(Intercept)")]) > 1)
+	{
+		tab6 = vif(LM)
+		
+		Results = list("Assumption 1 - Residuals have an Expected Value of Zero - Zero Within CI" = tab1, 
+					   "Assumption 2 - Residuals have Constant Variance - P-Value > 0.05" = tab2,
+					   "Assumption 3 - Residuals are Normally Distributed - P-Value > 0.05" = tab3,
+					   "Assumption 4 - Residuals are Uncorrelated - P-value > 0.05" = tab4,
+					   "Assumption 5 - The Relationship between the Response and Regressors is Correct - All P-Value < 0.1" = tab5,
+					   "Assumption 6 - The Regressors are Independent - All vif < 10" = tab6)
+	} else
+	{
+		Results = list("Assumption 1 - Residuals have an Expected Value of Zero - Zero Within CI" = tab1,
+					   "Assumption 2 - Residuals have Constant Variance - P-Value > 0.05" = tab2,
+					   "Assumption 3 - Residuals are Normally Distributed - P-Value > 0.05" = tab3,
+					   "Assumption 4 - Residuals are Uncorrelated - P-value > 0.05" = tab4,
+					   "Assumption 5 - The Relationship between the Response and Regressors is Correct - All P-Value < 0.1" = tab5)
+	}
+	
+    return(Results)
+}
+
+# statslm is a function that returns 3 statistics for a model, AIC, BIC, R2-Pred
+# statslm take on one input:
+	# model, the model that you want the 3 statistics of
+
+statslm = function(model)
+{
+    # Calculate the Predictive Residuals of 'model'
+    PR = residuals(model)/(1 - lm.influence(model)$hat)
+    
+    # Calculate the Predicted Residual Sum of Squares
+    PRESS=sum(PR^2)
+    
+    # Calculate the Total Sum of Squares
+    TSS=sum(anova(model)$"Sum Sq")
+    
+    # Summary
+    return(list("Prediction" = c("R^2-Pred" = round(1 - (PRESS/TSS), 4)),
+				"Fitness" = c("AIC" = AIC(model),
+							  "BIC" = BIC(model))))
+}
+
+require(gridExtra)
+
+# ---- rsslm residuals ---------------------------------------------------
+
+rsslm = list("model" = rsslm, 
+			 "resplots" = plotslm(rsslm, binwidth = 2), 
+			 "termplots" = termplots(dat = dat, model = rsslm),
+			 "tests" = testslm(rsslm),
+			 "stats" = statslm(rsslm))
+
+# residual plots
+grid.arrange(rsslm$resplots[[1]], 
+			 rsslm$resplots[[2]], 
+			 rsslm$resplots[[3]], 
+			 rsslm$resplots[[4]], 
+			 rsslm$resplots[[5]], 
+			 rsslm$resplots[[6]], 
+			 ncol = 3)
+
+# partial residual plots
+grid.arrange(rsslm$termplots[[1]], 
+			 rsslm$termplots[[2]], 
+			 rsslm$termplots[[3]], 
+			 rsslm$termplots[[4]], 
+			 ncol = 2)
+
+# model tests for 6 major assumptions
+rsslm$tests
+
+# model statistics
+rsslm$stats
+
+# ---- adjr2lm residuals ---------------------------------------------------
+
+adjr2lm = list("model" = adjr2lm, 
+			   "resplots" = plotslm(adjr2lm, binwidth = 2), 
+			   "termplots" = termplots(dat = dat, model = adjr2lm), 
+			   "tests" = testslm(adjr2lm),
+			   "stats" = statslm(adjr2lm))
+
+# residual plots
+grid.arrange(adjr2lm$resplots[[1]], 
+			 adjr2lm$resplots[[2]], 
+			 adjr2lm$resplots[[3]], 
+			 adjr2lm$resplots[[4]], 
+			 adjr2lm$resplots[[5]], 
+			 adjr2lm$resplots[[6]], 
+			 ncol = 3)
+
+# partial residual plots
+grid.arrange(adjr2lm$termplots[[1]], 
+			 adjr2lm$termplots[[2]], 
+			 adjr2lm$termplots[[3]], 
+			 ncol = 2)
+
+# model tests for 6 major assumptions
+adjr2lm$tests
+
+# model statistics
+adjr2lm$stats
+
+# ---- cplm residuals ---------------------------------------------------
+
+cplm = list("model" = cplm, 
+			"resplots" = plotslm(cplm, binwidth = 2), 
+			"termplots" = termplots(dat = dat, model = cplm), 
+			"tests" = testslm(cplm),
+			"stats" = statslm(cplm))
+
+# residual plots
+grid.arrange(cplm$resplots[[1]], 
+			 cplm$resplots[[2]], 
+			 cplm$resplots[[3]], 
+			 cplm$resplots[[4]], 
+			 cplm$resplots[[5]], 
+			 cplm$resplots[[6]], 
+			 ncol = 3)
+
+# partial residual plots
+grid.arrange(cplm$termplots[[1]], 
+			 cplm$termplots[[2]], 
+			 ncol = 2)
+
+# model tests for 6 major assumptions
+cplm$tests
+
+# model statistics
+cplm$stats
+
+# ---- biclm residuals ---------------------------------------------------
+
+biclm = list("model" = biclm, 
+			 "resplots" = plotslm(biclm, binwidth = 2), 
+			 "termplots" = termplots(dat = dat, model = biclm), 
+			 "tests" = testslm(biclm),
+			 "stats" = statslm(biclm))
+
+# residual plots
+grid.arrange(biclm$resplots[[1]], 
+			 biclm$resplots[[2]], 
+			 biclm$resplots[[3]], 
+			 biclm$resplots[[4]], 
+			 biclm$resplots[[5]], 
+			 biclm$resplots[[6]], 
+			 ncol = 3)
+
+# partial residual plots
+grid.arrange(biclm$termplots[[1]], 
+			 biclm$termplots[[2]], 
+			 ncol = 2)
+
+# model tests for 6 major assumptions
+biclm$tests
+
+# model statistics
+biclm$stats
+
+# ---- lets try some transformations and look at the residuals -----------------------------------------
+
+
+
+# ---- lets have the remaining models predict the future data ---------------------------------
+
+
+
+# ---- final model of choice -------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# lets run some transformations on all of the continuous predictor variables to see if we can create a stronger linear realtionship between them and the response
+# here is a function i created that takes in one input: dat
+# dat is the dataframe of data
+# the first column of dat must be the response variable
+# the other columns of dat must be the continuous predictor variables
+
+Transform = function(dat)
+{
+  dat = data.frame(dat)
+  
+  Results = sapply(2:NCOL(dat), function(i) c(
+    round(cor(dat[,1], logb(dat[,i], exp(1)))^2, 4),
+    round(cor(dat[,1], logb(dat[,i], 10))^2, 4),
+    round(cor(dat[,1], exp(dat[,i]))^2, 4),
+    round(cor(dat[,1], sqrt(dat[,i]))^2, 4),
+    round(cor(dat[,1], 1/dat[,i])^2, 4),
+    round(cor(dat[,1], dat[,i]^2)^2, 4),
+    round(cor(dat[,1], dat[,i]^3)^2, 4),
+    round(cor(logb(dat[,1], exp(1)), logb(dat[,i], 10))^2, 4),
+    round(cor(logb(dat[,1], exp(1)), exp(dat[,i]))^2, 4),
+    round(cor(logb(dat[,1], exp(1)), sqrt(dat[,i]))^2, 4),
+    round(cor(logb(dat[,1], exp(1)), 1/dat[,i])^2, 4),
+    round(cor(logb(dat[,1], exp(1)), dat[,i]^2)^2, 4),
+    round(cor(logb(dat[,1], exp(1)), dat[,i]^3)^2, 4),
+    round(cor(logb(dat[,1], 10), logb(dat[,i], exp(1)))^2, 4),
+    round(cor(logb(dat[,1], 10), exp(dat[,i]))^2, 4),
+    round(cor(logb(dat[,1], 10), sqrt(dat[,i]))^2, 4),
+    round(cor(logb(dat[,1], 10), 1/dat[,i])^2, 4),
+    round(cor(logb(dat[,1], 10), dat[,i]^2)^2, 4),
+    round(cor(logb(dat[,1], 10), dat[,i]^3)^2, 4),
+    round(cor(exp(dat[,1]), logb(dat[,i], exp(1)))^2, 4),
+    round(cor(exp(dat[,1]), logb(dat[,i], 10))^2, 4),
+    round(cor(exp(dat[,1]), sqrt(dat[,i]))^2, 4),
+    round(cor(exp(dat[,1]), 1/dat[,i])^2, 4),
+    round(cor(exp(dat[,1]), dat[,i]^2)^2, 4),
+    round(cor(exp(dat[,1]), dat[,i]^3)^2, 4),
+    round(cor(sqrt(dat[,1]), logb(dat[,i], exp(1)))^2, 4),
+    round(cor(sqrt(dat[,1]), logb(dat[,i], 10))^2, 4),
+    round(cor(sqrt(dat[,1]), exp(dat[,i]))^2, 4),
+    round(cor(sqrt(dat[,1]), 1/dat[,i])^2, 4),
+    round(cor(sqrt(dat[,1]), dat[,i]^2)^2, 4),
+    round(cor(sqrt(dat[,1]), dat[,i]^3)^2, 4),
+    round(cor(1/dat[,1], logb(dat[,i], exp(1)))^2, 4),
+    round(cor(1/dat[,1], logb(dat[,i], 10))^2, 4),
+    round(cor(1/dat[,1], exp(dat[,i]))^2, 4),
+    round(cor(1/dat[,1], sqrt(dat[,i]))^2, 4),
+    round(cor(1/dat[,1], dat[,i]^2)^2, 4),
+    round(cor(1/dat[,1], dat[,i]^3)^2, 4),
+    round(cor(dat[,1]^2, logb(dat[,i], exp(1)))^2, 4),
+    round(cor(dat[,1]^2, logb(dat[,i], 10))^2, 4),
+    round(cor(dat[,1]^2, exp(dat[,i]))^2, 4),
+    round(cor(dat[,1]^2, sqrt(dat[,i]))^2, 4),
+    round(cor(dat[,1]^2, dat[,i]^2)^2, 4),
+    round(cor(dat[,1]^2, dat[,i]^3)^2, 4),
+    round(cor(dat[,1]^3, logb(dat[,i], exp(1)))^2, 4),
+    round(cor(dat[,1]^3, logb(dat[,i], 10))^2, 4),
+    round(cor(dat[,1]^3, exp(dat[,i]))^2, 4),
+    round(cor(dat[,1]^3, sqrt(dat[,i]))^2, 4),
+    round(cor(dat[,1]^3, 1/dat[,i])^2, 4),
+    round(cor(dat[,1]^3, dat[,i]^2)^2, 4),
+    round(cor(logb(dat[,1], exp(1)), dat[,i])^2, 4),
+    round(cor(logb(dat[,1], 10), dat[,i])^2, 4),
+    round(cor(exp(dat[,1]), dat[,i])^2, 4),
+    round(cor(sqrt(dat[,1]), dat[,i])^2, 4),
+    round(cor(1/dat[,1], dat[,i])^2, 4),
+    round(cor(dat[,1]^2, dat[,i])^2, 4),
+    round(cor(dat[,1]^3, dat[,i])^2, 4)))
+  
+  Results = data.frame(Results)
+  
+  rnames = c("cor(Response, logb(Predictor, exp(1)))^2",
+             "cor(Response, logb(Predictor, 10))^2",
+             "cor(Response, exp(Predictor))^2",
+             "cor(Response, sqrt(Predictor))^2",
+             "cor(Response, 1/Predictor)^2",
+             "cor(Response, Predictor^2)^2",
+             "cor(Response, Predictor^3)^2",
+             "cor(logb(Response, exp(1)), logb(Predictor, 10))^2",
+             "cor(logb(Response, exp(1)), exp(Predictor))^2",
+             "cor(logb(Response, exp(1)), sqrt(Predictor))^2",
+             "cor(logb(Response, exp(1)), 1/Predictor)^2",
+             "cor(logb(Response, exp(1)), Predictor^2)^2",
+             "cor(logb(Response, exp(1)), Predictor^3)^2",
+             "cor(logb(Response, 10), logb(Predictor, exp(1)))^2",
+             "cor(logb(Response, 10), exp(Predictor))^2",
+             "cor(logb(Response, 10), sqrt(Predictor))^2",
+             "cor(logb(Response, 10), 1/Predictor)^2",
+             "cor(logb(Response, 10), Predictor^2)^2",
+             "cor(logb(Response, 10), Predictor^3)^2",
+             "cor(exp(Response), logb(Predictor, exp(1)))^2",
+             "cor(exp(Response), logb(Predictor, 10))^2",
+             "cor(exp(Response), sqrt(Predictor))^2",
+             "cor(exp(Response), 1/Predictor)^2",
+             "cor(exp(Response), Predictor^2)^2",
+             "cor(exp(Response), Predictor^3)^2",
+             "cor(sqrt(Response), logb(Predictor, exp(1)))^2",
+             "cor(sqrt(Response), logb(Predictor, 10))^2",
+             "cor(sqrt(Response), exp(Predictor))^2",
+             "cor(sqrt(Response), 1/Predictor)^2",
+             "cor(sqrt(Response), Predictor^2)^2",
+             "cor(sqrt(Response), Predictor^3)^2",
+             "cor(1/Response, logb(Predictor, exp(1)))^2",
+             "cor(1/Response, logb(Predictor, 10))^2",
+             "cor(1/Response, exp(Predictor))^2",
+             "cor(1/Response, sqrt(Predictor))^2",
+             "cor(1/Response, Predictor^2)^2",
+             "cor(1/Response, Predictor^3)^2",
+             "cor(Response^2, logb(Predictor, exp(1)))^2",
+             "cor(Response^2, logb(Predictor, 10))^2",
+             "cor(Response^2, exp(Predictor))^2",
+             "cor(Response^2, sqrt(Predictor))^2",
+             "cor(Response^2, 1/Predictor)^2",
+             "cor(Response^2, Predictor^3)^2",
+             "cor(Response^3, logb(Predictor, exp(1)))^2",
+             "cor(Response^3, logb(Predictor, 10))^2",
+             "cor(Response^3, exp(Predictor))^2",
+             "cor(Response^3, sqrt(Predictor))^2",
+             "cor(Response^3, 1/Predictor)^2",
+             "cor(Response^3, Predictor^2)^2",
+             "cor(logb(Response, exp(1)), Predictor)^2",
+             "cor(logb(Response, 10), Predictor)^2",
+             "cor(exp(Response), Predictor)^2",
+             "cor(sqrt(Response), Predictor)^2",
+             "cor(1/Response, Predictor)^2",
+             "cor(Response^2, Predictor)^2",
+             "cor(Response^3, Predictor)^2")
+  
+  cnames = colnames(dat[,2:NCOL(dat)])
+  
+  rownames(Results) = rnames
+  colnames(Results) = cnames
+    
+  Results = lapply(1:NCOL(Results), function(i) list(
+    "Results" = data.frame("Transformation" = rownames(Results)[order(Results[,i], decreasing = TRUE)], "Rsq" = Results[order(Results[,i], decreasing = TRUE),i]),
+    "Baseline" = data.frame("Transformation" = "cor(Response, Predictor)^2", "Rsq" = round(cor(dat[,1], dat[,i + 1])^2, 4))))
+  
+  names(Results) = cnames
+  
+  for(i in 1:length(Results))
+  {
+	Results[[i]][[1]] = Results[[i]][[1]][which(Results[[i]][[1]][,2] > Results[[i]][[2]][,2]),]
+  }
+  
+  return(Results)
+}
+
+trans = Transform(dat[,1:(NCOL(dat) - 3)])
+trans
+
+# lets try out some of the suggested transformations
+
+dat2 = dat
+dat2$ynorm = 1/dat2$ynorm
+dat2$xexp = logb(dat2$xexp, exp(1))
+dat2$xrexp = dat2$xrexp^3
+colnames(dat2) = c("ynorm_p_1", "xnorms", "ln_xexp", "xrexp_p3", "xtriangle", "xcauchy", "xunif", "xbeta", "cat1", "cat2", "cat3")
+
+plot_pairs2 = ggpairs(dat2, 
+					 columns = colnames(dat2[,1:8]), 
+        			 lower = list(mapping = aes(color = cat1)), 
+        			 upper = list(continuous = wrap(ggally_cor, size = 6, color = "black")),
+        			 diag = list(continuous = wrap(ggally_densityDiag, fill = "black", alpha = 1/3)))
+
+plot_pairs2
+
+dat3 = dat
+dat3$xexp = logb(dat3$xexp, exp(1))
+colnames(dat3) = c("ynorm", "xnorms", "ln_xexp", "xrexp", "xtriangle", "xcauchy", "xunif", "xbeta", "cat1", "cat2", "cat3")
+
+plot_pairs3 = ggpairs(dat3, 
+					 columns = colnames(dat3[,1:8]), 
+        			 lower = list(mapping = aes(color = cat1)), 
+        			 upper = list(continuous = wrap(ggally_cor, size = 6, color = "black")),
+        			 diag = list(continuous = wrap(ggally_densityDiag, fill = "black", alpha = 1/3)))
+
+plot_pairs3
+
+# lets put our plots and data frames into lists
+
+list_pairs = list("plot_pairs" = plot_pairs,
+				  "plot_pairs2" = plot_pairs2,
+				  "plot_pairs3" = plot_pairs3)
+
+list_dat = list("dat" = dat,
+				"dat2" = dat2,
+				"dat3" = dat3)
+
+rm(dat, dat2, dat3, plot_pairs, plot_pairs2, plot_pairs3, trans, Transform)
+
+
+
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Logistic Regression Analysis --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Polynomial Regression Analysis ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Stepwise Regression Analysis --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Ridge Regression Analysis -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Lasso Regression Analysis -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- ElasticNet Regression Analysis ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Random Forest Regression Analysis ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+# https://www.analyticsvidhya.com/blog/2015/08/comprehensive-guide-regression/
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ---- Using data.table --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# ---- creating a data.table --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+require(data.table)
+
+PAT_ID = as.integer(seq(10,10000,10))
+PAT_AGE = as.integer(round(rnorm(1000,50,10),0))
+PAT_GENDER = as.factor(sample(c("MALE","FEMALE"), size = 1000, replace = TRUE))
+PAT_ETHNICITY = as.factor(sample(c("WHITE", "BLACK", "INDIAN", "ASIAN", "AUSTRALIAN"), size = 1000, replace = TRUE))
+DOCTOR = as.factor(sample(c("O'NEAL JAMES", "WEBBER, NATHAN", "HIGGENS, JOHN", "SMITH, DARIN", "HAMILTON, JOSEPH", "HEROOK, DAVID", "LONG, DANIEL", "NEWTON, GARY", "MURPHY, ERIN", "FINNIGAN, JENNIFER"), size = 1000, replace = TRUE))
+PAT_SCHEDULED = sample(seq(c(ISOdate(2000,3,20)), by = "day", length.out = 1500), size = 1000)
+PAT_SCHEDULED = PAT_SCHEDULED + abs(rnorm(1000, 3600 * 4, 3600 * 2))
+PAT_SCHEDULED = PAT_SCHEDULED[order(PAT_SCHEDULED)]
+PAT_ARRIVED = PAT_SCHEDULED + abs(rnorm(1000, 3600 * 24 * 7 * 2.5, 3600 * 24 * 5))
+PAT_DEPARTED = PAT_ARRIVED + abs(sample(c(rnorm(500, 3600 * 14, 3600 * 4), rnorm(1000, 3600 * 24 * 4, 3600 * 24)), size = 1000))
+PAT_WAITED_DAYS = difftime(PAT_ARRIVED, PAT_SCHEDULED, units = "days")
+PAT_LOS_HOURS = difftime(PAT_DEPARTED, PAT_ARRIVED, units = "hours")
+PRE_OPTIMIZATION = as.factor(c(rep("Yes",500), rep("No",500)))
+PAT_ARRIVED[501:1000] = PAT_ARRIVED[501:1000] - (PAT_WAITED_DAYS[501:1000] * 0.15)
+PAT_DEPARTED[501:1000] = PAT_DEPARTED[501:1000] - (PAT_WAITED_DAYS[501:1000] * 0.15)
+PAT_DEPARTED[501:1000] = PAT_DEPARTED[501:1000] - (PAT_LOS_HOURS[501:1000] * 0.15)
+PAT_WAITED_DAYS = as.numeric(difftime(PAT_ARRIVED, PAT_SCHEDULED, units = "days"))
+PAT_LOS_HOURS = as.numeric(difftime(PAT_DEPARTED, PAT_ARRIVED, units = "hours"))
+PAT_CLASS = as.factor(ifelse(PAT_LOS_HOURS < 24, "OUTPATIENT", "INPATIENT"))
+
+dat = data.table(PAT_ID, PAT_AGE, PAT_GENDER, PAT_ETHNICITY, PAT_CLASS, DOCTOR, PAT_SCHEDULED, PAT_ARRIVED, PAT_DEPARTED, PAT_WAITED_DAYS, PAT_LOS_HOURS, PRE_OPTIMIZATION)
+
+rm(PAT_ID, PAT_AGE, PAT_GENDER, PAT_ETHNICITY, PAT_CLASS, DOCTOR, PAT_SCHEDULED, PAT_ARRIVED, PAT_DEPARTED, PAT_WAITED_DAYS, PAT_LOS_HOURS, PRE_OPTIMIZATION)
+
+# print the data table, by default it only shows the first 5 and last 5 rows
+
+print(dat, nrow = NROW(dat))
+
+# ---- subsetting --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# subset rows
+
+dat[1:6,]
+
+# subset rows and columns
+
+dat[1:6, PAT_GENDER]
+
+# subset multiple columns
+
+dat[, .(PAT_AGE, PAT_GENDER)]
+
+# subset with conditions
+
+	# returns a table meeting condition
+dat[PAT_ETHNICITY == "WHITE"]
+
+	# returns a vector of logicals identifying which observations do/don't meet the condition - like which
+dat[, PAT_ETHNICITY == "WHITE"]
+
+	# multiple conditions
+dat[PAT_ETHNICITY %in% c("WHITE", "INDIAN")]
+
+# summarize an entire column
+
+dat[, summary(PAT_LOS_HOURS)]
+
+# summarize multiple columns
+
+dat[, .("MEASURE" = names(summary(PAT_LOS_HOURS)), 
+		"LOS" = summary(PAT_LOS_HOURS), 
+		"WAIT" = summary(PAT_WAITED_DAYS))]
+
+# ---- aggregating--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# aggregate using mean
+
+dat[, .("MEAN.LOS" = mean(PAT_LOS_HOURS)), 
+	  by = .(PAT_GENDER, DOCTOR)]
+
+# aggregate using .N --> same as table()
+	  
+dat[,.N, by = .(DOCTOR, PAT_GENDER)]
+
+# aggregate using summary
+
+dat[, .("MEASURE" = names(summary(PAT_LOS_HOURS)), 
+		"SUMMARY.LOS" = summary(PAT_LOS_HOURS)), 
+	  by = .(PAT_GENDER, DOCTOR)]
+
+# ---- updating columns --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# change id values
+
+dat[,PAT_ID := 1:1000]
+dat[,PAT_ID := seq(10, 10 * 1000, 10)]
+
+# remove columns
+
+dat[, PAT_ID := NULL]
+
+# re-order position of columns
+
+setcolorder(dat, c("PAT_GENDER", "PAT_ETHNICITY", "PAT_CLASS", "DOCTOR", "PAT_AGE", "PAT_SCHEDULED", "PAT_ARRIVED", "PAT_DEPARTED", "PAT_WAITED_DAYS", "PAT_LOS_HOURS", "PRE_OPTIMIZATION"))
+
+# re-name columns
+
+setnames(dat, "PAT_GENDER", "GENDER")
+setnames(dat, c("GENDER", "DOCTOR"), c("PAT_GENDER", "PAT_DOCTOR"))
+
+# convert between data.frames and data.tables
+
+data.frame(dat)
+
+data.table(dat)
+
+# add columns
+
+dat[,PAT_ID := 1:1000]
+
+# ---- joins --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# creating new data tables 
+
+dat2 = data.table(dat[,.(PAT_ID)])
+dat2[,PAT_ID := seq(10, 10 * 1000, 5)]
+
+
+# setting column keys on which to join
+
+setkey(dat, PAT_ID)
+setkey(dat2, PAT_ID)
+
+# inner join
+
+dat[dat2, nomatch = 0]
+
+# right join
+
+dat[dat2]
+
+# ---- shift --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# lag 1
+
+dat2[,PAT_ID_LAG1 := shift(PAT_ID, 1)]
+
+# lag 3
+
+dat2[,PAT_ID_LAG3 := shift(PAT_ID, 3)]
+
+# forward lag 1
+
+dat2[,PAT_ID_LAG1_FORWARD := shift(PAT_ID, 1, type = "lead")]
+
+# forward lag 3
+
+dat2[,PAT_ID_LAG3_FORWARD := shift(PAT_ID, 3, type = "lead")]
+
+
+# ---- melt, dcast --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# ftp://cran.r-project.org/pub/R/web/packages/data.table/vignettes/datatable-reshape.html
